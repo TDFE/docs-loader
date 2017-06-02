@@ -1,0 +1,9 @@
+{
+  "name": "@td-ui/react-markdown-loader",
+  "version": "1.0.0",
+  "description": "td-ui使用的webpack2插件，用于将md文件转换为react组件",
+  "main": "index.js",
+  "repository": "https://github.com/hihl/react-markdown-loader.git",
+  "author": "hihl <348267823@qq.com>",
+  "license": "MIT"
+}
