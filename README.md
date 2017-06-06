@@ -1,2 +1,2 @@
-# @td-ui/react-markdown-loader
-webpack2 react-markdown-loader
+# docs-loader
+webpack2 docs-loader
