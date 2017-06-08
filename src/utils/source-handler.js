@@ -27,7 +27,7 @@ function findValidFiles(source, transformers) {
     R.filter(R.either(isDirectory, isValidFile(transformers))),
     R.chain(filename => {
       if (isDirectory(filename)) {
-        const subFiles = fs.readFileSync(filename)
+        const subFiles = fs.readdirSync(filename)
           .map(subFile => path.join(filename, subFile));
           return findValidFiles(subFiles, transformers);
       }
@@ -158,7 +158,7 @@ exports.generate = function generate(source, transformers = []) {
 
 exports.stringify = (
   filesTree,
-  options = {}, /* { lazyLoad, plugins, transformers } */
+  options = {}, /* { lazyLoad, transformers } */
 ) => stringify({ nodeValue: filesTree, ...options });
 
 exports.traverse = function traverse(filesTree, fn) {
@@ -185,6 +185,6 @@ exports.process = (
   });
   const transformer = transformers[transformerIndex];
 
-  const parsedMarkdown = require(transformer.use)(filename, fileContent);
+  const parsedMarkdown = require(transformer.use)(fileContent);
   return parsedMarkdown;
 };

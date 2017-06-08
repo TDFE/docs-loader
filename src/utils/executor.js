@@ -11,10 +11,19 @@ import stringify from './stringify';
 process.on('message', task => {
   const filename = task.filename,
       content = task.content,
-      plugins = task.plugins,
       transformers = task.transformers;
 
-  const parsedMarkdown = sourceHandler.process(filename, content, plugins, transformers);
+  const parsedMarkdown = sourceHandler.process(filename, content, transformers);
   const result = stringify(parsedMarkdown);
   process.send(result);
 });
+
+module.exports = task => {
+  const filename = task.filename,
+      content = task.content,
+      transformers = task.transformers;
+
+  const parsedMarkdown = sourceHandler.process(filename, content, transformers);
+  const result = stringify(parsedMarkdown);
+  task.callback(null, result);
+};

@@ -13,20 +13,25 @@ const executorsCount = os.cpus().length - 1;
 
 function createExecutors(count) {
   const executors = [];
+  let i = 0;
   while(executors.length < count) {
-    const executor = childProcess.fork(path.join(__dirname, './executor.js'), [], {execArgv: ['--debug-brk']});
+    i++;
+    const executor = typeof v8debug === 'undefined' ?
+      childProcess.fork(path.join(__dirname, './executor.js'))
+      :
+      childProcess.fork(path.join(__dirname, './executor.js'), [], {execArgv: [`--debug-brk=${10240 + i}`]});
     executor.setMaxListeners(1);
     executors.push(executor);
   }
   return executors;
 }
 
-module.exports = function() {
+module.exports = (function() {
   const executors = createExecutors(executorsCount);
   const tasksQueue = [];
   function launch(task) {
     const executor = executors.pop();
-    const callback = task.callback();
+    const { callback } = task;
     executor.send(task);
     executor.once('message', result => {
       callback(null, result);
@@ -38,13 +43,16 @@ module.exports = function() {
   }
 
   return {
-    queue: task => {
+    queue(task) {
+      console.log(task);
       if (executors.length <= 0) {
         tasksQueue.push(task);
         return;
       }
       launch(task);
     },
-    jobDone: () => executors.forEach(executor => executor.kill())
+    jobDone() {
+      executors.forEach(executor => executor.kill());
+    }
   }
-}
+})();
