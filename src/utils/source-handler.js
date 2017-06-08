@@ -176,7 +176,6 @@ exports.traverse = function traverse(filesTree, fn) {
 exports.process = (
   filename,
   fileContent,
-  plugins,
   transformers = []
 ) => {
   let transformerIndex = -1;
@@ -186,11 +185,6 @@ exports.process = (
   });
   const transformer = transformers[transformerIndex];
 
-  const markdown = require(transformer.use)(filename, fileContent);
-  const parsedMarkdown = plugins.reduce(
-    (markdownData, plugin) =>
-      require(plugin[0])(markdownData, plugin[1]),
-    markdown,
-  );
+  const parsedMarkdown = require(transformer.use)(filename, fileContent);
   return parsedMarkdown;
 };

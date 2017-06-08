@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import loaderUtils from 'loader-utils';
 import sourceHandler from './utils/source-handler';
-import { getPlugins, getTransformers } from './utils/tool';
+import { getTransformers } from './utils/tool';
 
 module.exports = function docsLoader() {
   if (this.cacheable) {
@@ -20,8 +20,6 @@ module.exports = function docsLoader() {
   const transformers = loaderOptions.transformers.concat(getTransformers()).map(_ref => ({test: _ref.test.toString(), use: _ref.use}));
   const source = Object.assign({}, loaderOptions.source);
   const markdown = sourceHandler.generate(source, transformers);
-  const browserPlugins = getPlugins('browser');
-  const pluginsString = browserPlugins.map(plugin => `[require("${plugin[0]}"), "${JSON.stringify(plugin[1])}"]`).join(',\n');
   const picked = {};
   const pickedPromises = [];
   if (loaderOptions.pick) {
@@ -35,9 +33,8 @@ module.exports = function docsLoader() {
   Promise.all(pickedPromises).then(() => {
     const sourceDataString = sourceHandler.stringify(markdown, {
       lazyLoad: loaderOptions.lazyLoad,
-      plugins,
       transformers
     });
-    callback(null, `module.exports = {\n markdown: "${sourceDataString}", \n picked: "${JSON.stringify(picked, null, 2)}", \n plugins: [\n"${pluginsString}"\n]\n}`);
+    callback(null, `module.exports = {\n markdown: "${sourceDataString}", \n picked: "${JSON.stringify(picked, null, 2)}"\n]\n}`);
   });
 }

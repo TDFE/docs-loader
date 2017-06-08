@@ -8,7 +8,7 @@
 import path from 'path';
 import scheduler from './scheduler';
 import loaderUtils from 'loader-utils';
-import { getPlugins, getTransformers } from './tool';
+import { getTransformers } from './tool';
 
 module.exports = function sourceLoader(content) {
   if (this.cacheable) {
@@ -17,13 +17,11 @@ module.exports = function sourceLoader(content) {
   const webpackRemainingChain = loaderUtils.getRemainingRequest(this).split('!');
   const fullPath = webpackRemainingChain[webpackRemainingChain.length - 1];
   const filename = path.relative(process.cwd(), fullPath);
-  const plugins = getPlugins('node');
 
   const callback = this.async();
   boss.queue({
     filename,
     content,
-    plugins,
     transformers: getTransformers(),
     callback(err, result) {
       callback(err, `module.exports = ${result};`);

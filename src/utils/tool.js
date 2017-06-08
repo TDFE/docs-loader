@@ -5,18 +5,29 @@
  * @Last modified time: 2017-06-08 09:57:09
  */
 
-import path from 'path';
-import resolvePlugins from './resolve-plugins';
-
-const plugins = [
- 'highlight',
- 'react?lang=__react',
- 'toc?maxDepth=2&keepElem',
- 'description'
+const defaultPresets = [
+ 'es2015-ie',
+ 'react',
+ 'stage-2',
+];
+const defaultPlugins = [
+ 'transform-decorators-legacy',
+ 'transform-class-properties',
+ 'transform-runtime',
+ 'lodash'
 ];
 
-exports.getPlugins = moduleName => resolvePlugins(plugins, moduleName);
+const babel = {
+  cacheDirectory: true,
+  babelrc: false,
+  presets: defaultPresets,
+  plugins: defaultPlugins
+};
+
 exports.getTransformers = () => ({
   test: /\.md$/,
-  use: path.join(__dirname, '..', 'transformers', 'markdown')
+  use: [{
+    loader: 'babel-loader',
+    query: babel
+  }, 'markdown-it-react-loader']
 });
