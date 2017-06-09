@@ -107,8 +107,12 @@ function stringify(params) {
   return R.cond([
     [n => typeof n === 'object', (obj) => {
       if (shouldBeLazy) {
+        const fileDir = path.join(__dirname, '..', '..', 'tmp');
+        if (!fs.existsSync(fileDir)) {
+          fs.mkdirSync(fileDir);
+        }
         const filePath = `${path.join(
-          __dirname, '..', '..', 'tmp',
+          fileDir,
           nodePath.replace(/^\/+/, '').replace(/\//g, '-'),
         )}.index.js`;
         const fileInnerContent = stringifyObject({
