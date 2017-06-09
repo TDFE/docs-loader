@@ -27,7 +27,7 @@ function findValidFiles(source, transformers) {
     R.filter(R.either(isDirectory, isValidFile(transformers))),
     R.chain(filename => {
       if (isDirectory(filename)) {
-        const subFiles = fs.readFileSync(filename)
+        const subFiles = fs.readdirSync(filename)
           .map(subFile => path.join(filename, subFile));
           return findValidFiles(subFiles, transformers);
       }
@@ -88,6 +88,7 @@ function lazyLoadWrapper({
 
 function shouldLazyLoad(nodePath, nodeValue, lazyLoad) {
   if (typeof lazyLoad === 'function') {
+    console.log(`lazy: ${nodePath}, ${nodeValue}`);
     return lazyLoad(nodePath, nodeValue);
   }
 

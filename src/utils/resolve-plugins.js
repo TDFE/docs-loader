@@ -15,7 +15,7 @@ function resolvePlugin(plugin) {
   let result = void 0;
   try {
     result = resolve.sync(plugin, { basedir: path.resolve(__dirname, '../plugins') });
-  } cache(e) {}
+  } catch(e) {}
   return result;
 }
 
@@ -23,7 +23,7 @@ module.exports = function resolvePlugins(plugins, moduleName) {
   return plugins.map(plugin => {
     const snippets = plugin.split('?');
     const pluginName = path.join(snippets[0], moduleName);
-    const pluginQuery = loaderUtils.parseQuery(snippets[1] ? `?${snippets[1]}` : '');
+    const pluginQuery = loaderUtils.parseQuery(`?${snippets[1] || ''}`);
     const resolvedPlugin = resolvePlugin(pluginName);
     if (!resolvedPlugin) {
       return false;
