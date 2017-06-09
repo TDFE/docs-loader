@@ -86,6 +86,9 @@ function lazyLoadWrapper({
   return content;
 }
 
+/**
+ * 判断文件是否需要异步加载，通常带有jsx代码的md文件需要异步加载
+ */
 function shouldLazyLoad(nodePath, nodeValue, lazyLoad) {
   if (typeof lazyLoad === 'function') {
     console.log(`lazy: ${nodePath}, ${nodeValue}`);
@@ -148,6 +151,12 @@ function stringify(params) {
   ])(nodeValue);
 }
 
+/**
+ * 生成md文件树
+ * @param  {object} source            根目录
+ * @param  {Array}  [transformers=[]] md->react转换器，此处用于校验格式
+ * @return {[type]}                   文件树
+ */
 exports.generate = function generate(source, transformers = []) {
   if (source === null || source === undefined) {
     return {};
@@ -161,11 +170,17 @@ exports.generate = function generate(source, transformers = []) {
   return filesTree;
 }
 
+/**
+ * 将编译结果转为loader需要的字符串类型
+ */
 exports.stringify = (
   filesTree,
-  options = {}, /* { lazyLoad, plugins, transformers } */
+  options = {}, /* { lazyLoad } */
 ) => stringify({ nodeValue: filesTree, ...options });
 
+/**
+ * 递归文件树，编译md文件
+ */
 exports.traverse = function traverse(filesTree, fn) {
   Object.keys(filesTree).forEach((key) => {
     const value = filesTree[key];
@@ -178,6 +193,14 @@ exports.traverse = function traverse(filesTree, fn) {
   });
 };
 
+/**
+ * 编译md文件
+ * @param  {String} filename          文件名
+ * @param  {String} fileContent       文件内容
+ * @param  {Array} plugins            编译所需插件列表
+ * @param  {Array}  [transformers=[]] loaders
+ * @return {String}                   编译结果
+ */
 exports.process = (
   filename,
   fileContent,

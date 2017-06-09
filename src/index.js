@@ -30,7 +30,7 @@ module.exports = function docsLoader() {
     const nodePlugins = getPlugins('node');
     sourceHandler.traverse(markdown, filename => {
       const fileContent = fs.readFileSync(path.join(process.cwd(), filename)).toString();
-      if (typeof v8debug === 'undefined') {
+      if (typeof v8debug === 'undefined') { // 非调试模式，使用多线程调度，加快编译速度
         pickedPromises.push(new Promise(resolve => {
           scheduler.queue({
             filename,
@@ -56,7 +56,7 @@ module.exports = function docsLoader() {
             },
           });
         }));
-      } else {
+      } else { // 调试模式child_process无法打断点，使用单线程执行任务
         runTask({
           filename,
           content: fileContent,
