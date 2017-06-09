@@ -8,7 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 import R from 'ramda';
-import { escapeWinPath, toUriPaht } from './escape-win-path';
+import { escapeWinPath, toUriPath } from './escape-win-path';
 
 const sourceLoaderPath = path.join(__dirname, 'source-loader');
 
@@ -76,14 +76,14 @@ function lazyLoadWrapper({
   isLazyLoadWrapper,
 }) {
   const loaderString = isLazyLoadWrapper ? '' : `${sourceLoaderPath}!`;
-  return
-    `function () {\n
-      return new Promise(function (resolve) {\n
-        require.ensure([], function (require) {\n
-            resolve(require('${escapeWinPath(loaderString)}${escapeWinPath(filePath)}'));\n
-          }, '${toUriPath(filename)}');\n
-      });\n
-    }`;
+  const content = `function () {
+    return new Promise(function (resolve) {
+      require.ensure([], function (require) {
+          resolve(require('${escapeWinPath(loaderString)}${escapeWinPath(filePath)}'));
+        }, '${toUriPath(filename)}');
+    });
+  }`;
+  return content;
 }
 
 function shouldLazyLoad(nodePath, nodeValue, lazyLoad) {

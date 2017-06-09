@@ -5,18 +5,17 @@
  * @Last modified time: 2017-06-07 13:40:34
  */
 
+import fs from 'fs';
 import R from 'ramda';
 import path from 'path';
-import resolve from 'resolve';
 import loaderUtils from 'loader-utils';
 import { escapeWinPath } from './escape-win-path';
 
 function resolvePlugin(plugin) {
-  let result = void 0;
-  try {
-    result = resolve.sync(plugin, { basedir: path.resolve(__dirname, '../plugins') });
-  } catch(e) {}
-  return result;
+  const _path = path.resolve(__dirname, '../plugins', `${plugin}.js`);
+  if (fs.existsSync(_path)) {
+    return _path;
+  }
 }
 
 module.exports = function resolvePlugins(plugins, moduleName) {

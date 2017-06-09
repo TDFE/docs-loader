@@ -13,13 +13,8 @@ const executorsCount = os.cpus().length - 1;
 
 function createExecutors(count) {
   const executors = [];
-  let i = 0;
   while(executors.length < count) {
-    i++;
-    const executor = typeof v8debug === 'undefined' ?
-      childProcess.fork(path.join(__dirname, './executor.js'))
-      :
-      childProcess.fork(path.join(__dirname, './executor.js'), [], {execArgv: [`--debug-brk=${10240 + i}`]});
+    const executor = childProcess.fork(path.join(__dirname, './executor.js'))
     executor.setMaxListeners(1);
     executors.push(executor);
   }

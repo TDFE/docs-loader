@@ -9,6 +9,7 @@ import path from 'path';
 import scheduler from './scheduler';
 import loaderUtils from 'loader-utils';
 import { getPlugins, getTransformers } from './tool';
+import runTask from './runTask';
 
 module.exports = function sourceLoader(content) {
   if (this.cacheable) {
@@ -20,13 +21,18 @@ module.exports = function sourceLoader(content) {
   const plugins = getPlugins('node');
 
   const callback = this.async();
-  boss.queue({
+  const task = {
     filename,
     content,
     plugins,
-    transformers: getTransformers(),
+    transformers: [getTransformers()],
     callback(err, result) {
       callback(err, `module.exports = ${result};`);
     },
-  });
+  };
+  if (typeof v8debug === 'undefined') {
+    scheduler.queue(task);
+  } else {
+    runTask(task);
+  }
 }
