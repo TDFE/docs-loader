@@ -5,8 +5,8 @@
  * @Last modified time: 2017-06-08 14:05:24
  */
 
-import babel from 'babel-core';
-import types from 'babel-types';
+import * as babel from 'babel-core';
+import * as types from 'babel-types';
 import traverse from 'babel-traverse';
 import generator from 'babel-generator';
 

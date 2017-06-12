@@ -12,7 +12,8 @@ const plugins = [
  'highlight',
  'react?lang=__react',
  'toc?maxDepth=2&keepElem',
- 'description'
+ 'description',
+ 'td'
 ];
 
 exports.getPlugins = moduleName => resolvePlugins(plugins, moduleName);

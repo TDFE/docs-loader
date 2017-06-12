@@ -31,6 +31,7 @@ module.exports = function sourceLoader(content) {
     },
   };
   if (typeof v8debug === 'undefined') {
+    task.transformers = task.transformers.map(_ref => ({test: _ref.test.toString(), use: _ref.use}));
     scheduler.queue(task);
   } else {
     runTask(task);
