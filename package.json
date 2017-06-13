@@ -1,6 +1,6 @@
 {
   "name": "docs-loader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "webpack2插件，用于将md文件转换为react组件",
   "main": "lib/index.js",
   "repository": "https://github.com/TDFE/docs-loader.git",
